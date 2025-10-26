@@ -8,6 +8,24 @@ import { loadEnvFile } from 'node:process';
 
 loadEnvFile();
 
+const AppearanceType = new GraphQLObjectType({
+    name: 'Appearance',
+    fields: {
+        gender: {type: GraphQLString },
+        race: {type: GraphQLString },
+        height: { type: new GraphQLList(GraphQLString) },
+        weight: { type: new GraphQLList(GraphQLString) },
+        eyeColor: {
+            type: GraphQLString,
+            resolve: (src) => src['eye-color']
+        },
+        hairColor: {
+            type: GraphQLString,
+            resolve: (src) => src['hair-color']
+        },
+    }
+})
+
 // Definindo o tipo User que representa os dados vindos da API
 const PowerstatsType = new GraphQLObjectType({
   name: 'Powerstats',
@@ -52,6 +70,7 @@ const UserType = new GraphQLObjectType({
     name: { type: GraphQLString },
     powerstats:  { type: PowerstatsType  },
     biography: { type: BiographyType },
+    appearance: { type: AppearanceType },
   },
 });
 
