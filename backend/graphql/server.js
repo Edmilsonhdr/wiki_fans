@@ -1,12 +1,22 @@
 import express from 'express';
 import fetch from 'node-fetch';
-import { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLInt, GraphQLList } from 'graphql';
+import { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLInt, GraphQLList, GraphQLScalarType } from 'graphql';
 import { createHandler } from 'graphql-http/lib/use/express';
 import { ruruHTML } from 'ruru/server';
 
 import { loadEnvFile } from 'node:process';
 
 loadEnvFile();
+
+
+
+const Work = new GraphQLObjectType({
+    name: 'Work',
+    fields: {
+        occupation: {type: GraphQLString},
+        base: {type: GraphQLString}
+    }
+})
 
 const AppearanceType = new GraphQLObjectType({
     name: 'Appearance',
@@ -71,6 +81,8 @@ const UserType = new GraphQLObjectType({
     powerstats:  { type: PowerstatsType  },
     biography: { type: BiographyType },
     appearance: { type: AppearanceType },
+    work: {type: Work},
+    
   },
 });
 
