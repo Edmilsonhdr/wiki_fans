@@ -1,4 +1,11 @@
-import { GraphQLObjectType, GraphQLString } from 'graphql';
+import { GraphQLObjectType, GraphQLString, GraphQLInt } from 'graphql';
+
+import { PowerstatsType } from './powerstats.type.js';
+import { BiographyType } from './biography.type.js';
+import { AppearanceType } from './appearance.type.js';
+import { Work } from './work.type.js';
+import { Connections } from './conections.type.js';
+import { Image } from './image.type.js';
 
 export const UserType = new GraphQLObjectType({
   name: 'User',
