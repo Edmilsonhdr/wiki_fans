@@ -4,14 +4,54 @@ import { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLInt, GraphQLLis
 import { createHandler } from 'graphql-http/lib/use/express';
 import { ruruHTML } from 'ruru/server';
 
+import { loadEnvFile } from 'node:process';
+
+loadEnvFile();
+
 // Definindo o tipo User que representa os dados vindos da API
+const PowerstatsType = new GraphQLObjectType({
+  name: 'Powerstats',
+  fields: {
+    intelligence: { type: GraphQLInt },
+    strength: { type: GraphQLInt },
+    speed: { type: GraphQLInt },
+    durability: { type: GraphQLInt },
+    power: { type: GraphQLInt },
+    combat: { type: GraphQLInt },
+  },
+});
+
+const BiographyType = new GraphQLObjectType({
+  name: 'Biography',
+  fields: {
+    fullName: { 
+        type: GraphQLString,
+        resolve: (src) => src['full-name']
+     },
+    alterEgos: { 
+        type: GraphQLString,
+        resolve: (src) => src['alter-egos']
+     },
+    aliases: { type: new GraphQLList(GraphQLString) },
+    placeOfBirth: { 
+        type: GraphQLString,
+        resolve: (src) => src['place-of-birth']
+    },
+    firstAppearance: { 
+        type: GraphQLString,
+        resolve: (src) => src['first-appearance']
+    },
+    publisher: { type: GraphQLString },
+  },
+});
+
 const UserType = new GraphQLObjectType({
   name: 'User',
   fields: {
     id: { type: GraphQLInt },
     name: { type: GraphQLString },
-    username: { type: GraphQLString },
-    email: { type: GraphQLString },
+    powerstats:  { type: PowerstatsType  },
+    biography: { type: BiographyType },
   },
 });
 
@@ -22,7 +62,7 @@ const RootQuery = new GraphQLObjectType({
     users: {
       type: new GraphQLList(UserType),
       resolve: async () => {
-        const res = await fetch('https://jsonplaceholder.typicode.com/users');
+        const res = await fetch(`https://superheroapi.com/api/${process.env.SUPERHERO_API_KEY}`);
         return res.json();
       },
     },
@@ -30,7 +70,7 @@ const RootQuery = new GraphQLObjectType({
       type: UserType,
       args: { id: { type: GraphQLInt } },
       resolve: async (_parent, args) => {
-        const res = await fetch(`https://jsonplaceholder.typicode.com/users/${args.id}`);
+        const res = await fetch(`https://superheroapi.com/api/${process.env.SUPERHERO_API_KEY}/${args.id}`);
         return res.json();
       },
     },
@@ -53,6 +93,6 @@ app.get('/', (_req, res) => {
   res.end(ruruHTML({ endpoint: '/graphql' }));
 });
 
-app.listen(4000, () => {
-  console.log('Servidor GraphQL rodando em http://localhost:4000/graphql');
+app.listen(process.env.PORT, () => {
+  console.log(`Servidor GraphQL rodando em http://localhost:${process.env.PORT}/graphql`);
 });
