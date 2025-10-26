@@ -1,4 +1,4 @@
-import { GraphQLObjectType } from 'graphql';
+import { GraphQLObjectType, GraphQLInt } from 'graphql';
 // Definindo o tipo User que representa os dados vindos da API
 export const PowerstatsType = new GraphQLObjectType({
   name: 'Powerstats',
