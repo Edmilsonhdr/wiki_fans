@@ -8,7 +8,16 @@ import { loadEnvFile } from 'node:process';
 
 loadEnvFile();
 
-
+const Connections = new GraphQLObjectType({
+    name: 'Connections',
+    fields: {
+    groupAffiliation: {
+        type: GraphQLString,
+        resolve: (src) => src['group-affiliation']
+    },
+    relatives: {type: GraphQLString}
+    }
+})
 
 const Work = new GraphQLObjectType({
     name: 'Work',
@@ -82,7 +91,7 @@ const UserType = new GraphQLObjectType({
     biography: { type: BiographyType },
     appearance: { type: AppearanceType },
     work: {type: Work},
-    
+    connections: {type: Connections}
   },
 });
 
