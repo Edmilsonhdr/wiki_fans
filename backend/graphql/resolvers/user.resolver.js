@@ -1,5 +1,7 @@
 import fetch from 'node-fetch';
+import { loadEnvFile } from 'node:process';
 
+loadEnvFile();
 export const userResolvers = {
   Query: {
     users: async () => {
