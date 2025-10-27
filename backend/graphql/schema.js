@@ -1,31 +1,20 @@
-import { loadEnvFile } from 'node:process';
-import fetch from 'node-fetch';
-import { GraphQLObjectType, GraphQLInt, GraphQLList, GraphQLSchema } from 'graphql';
-import { UserType } from './types/user.type.js'
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import { userResolvers } from './resolvers/user.resolver.js';
+import { UserType } from './types/user.type.js';
+import { GraphQLObjectType, GraphQLInt, GraphQLList } from 'graphql';
 
-loadEnvFile();
-// Definindo as queries disponíveis
-const RootQuery = new GraphQLObjectType({
+const QueryType = new GraphQLObjectType({
   name: 'Query',
   fields: {
-    users: {
-      type: new GraphQLList(UserType),
-      resolve: async () => {
-        const res = await fetch(`https://superheroapi.com/api/${process.env.SUPERHERO_API_KEY}`);
-        return res.json();
-      },
-    },
+    users: { type: new GraphQLList(UserType) },
     user: {
       type: UserType,
       args: { id: { type: GraphQLInt } },
-      resolve: async (_parent, args) => {
-        const res = await fetch(`https://superheroapi.com/api/${process.env.SUPERHERO_API_KEY}/${args.id}`);
-        return res.json();
-      },
     },
   },
 });
 
-export const schema = new GraphQLSchema({
-  query: RootQuery,
+export const schema = makeExecutableSchema({
+  typeDefs: [QueryType],
+  resolvers: [userResolvers],
 });
